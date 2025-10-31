@@ -42,7 +42,8 @@ func _physics_process(delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
 		velocity.x = direction * SPEED
-		$Sprite2D.flip_h = direction < 0
+		$AnimatedSprite2D.flip_h = direction < 0
+		$WeaponHolder.position.x = 5 * direction
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
@@ -60,5 +61,5 @@ func equiparArma(rutaArma: String):
 	
 	var escenaArma = load(rutaArma)
 	var nuevaArma = escenaArma.instantiate()
-	add_child(nuevaArma)
+	$WeaponHolder.add_child(nuevaArma)
 	armaSeleccionada = nuevaArma
