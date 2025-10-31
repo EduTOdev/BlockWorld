@@ -3,8 +3,11 @@ extends Node2D
 #Parametros Laser
 var laserVisible = false
 
-func _process(delta):
+func _process(_delta):
+	#Detecta en tiempo real si se esta manteniendo pulsado el clic izq del mouse
 	laserVisible = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	#Activa redraw el cual manda a llamar draw constantemente para que se actualice la posicion del laser
+	#en tiempo real
 	if laserVisible:
 		queue_redraw()
 	else:
