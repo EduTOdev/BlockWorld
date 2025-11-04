@@ -1,8 +1,12 @@
 extends CharacterBody2D
 
 # Parametros Movimiento
-const SPEED = 150.0
-const JUMP_VELOCITY = -350.0
+@export var SPEED = 150.0
+@export var JUMP_VELOCITY = -350.0
+@export var DASHSPEED = 300.0
+@export var DashDuracion = 0.2
+var Direction
+var Dasheando = false
 
 # Aqui se guarda el arma actual y la lista de armas del player
 var armaSeleccionada: Node2D
@@ -42,33 +46,58 @@ func _physics_process(delta: float) -> void:
 		position.x += 5
 	else: if !raycastIzq.is_colliding() and raycastDer.is_colliding(): # Correcion de esquinas Der -> Izq
 		position.x -= 5
+	
 	# Manipular el salto del player
 	if Input.is_action_just_pressed("ui_accept") and tiempoAire < 0.1: # Coyote time
 		velocity.y = JUMP_VELOCITY
 		# Se aumenta tiempoAire a un valor superior para indicar que ya se salto
 		tiempoAire = 1
-
+	
 	#Se recibe la input de movimiento del personaje y guarda 1 o -1 para indicar la direccion
-	var direction := Input.get_axis("ui_left", "ui_right")
-	if direction:
-		#Aplica la velocidad.x en base a la direccion
-		velocity.x = direction * SPEED
-		#Se giran los sprites en base a la direccion
-		$AnimatedSprite2D.flip_h = direction < 0
-		$WeaponHolder.position.x = 5 * direction
-	else:
-		#Si se suelta la tecla de movimiento se va reduciendo su velocidad gradualmente hasta llegar a 0
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-
+	Direction = Input.get_axis("ui_left", "ui_right")
+	if !Dasheando:
+		if Direction:
+			#Aplica la velocidad.x en base a la direccion
+			velocity.x = Direction * SPEED
+			#Se giran los sprites en base a la direccion
+			$AnimatedSprite2D.flip_h = Direction < 0
+			if $AnimatedSprite2D.animation != "moving":
+				$AnimatedSprite2D.animation = "moving"
+				$AnimatedSprite2D.play()
+			$WeaponHolder.position.x = 5 * Direction
+		else:
+			#Si se suelta la tecla de movimiento se va reduciendo su velocidad gradualmente hasta llegar a 0
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+			if velocity.x == 0 and $AnimatedSprite2D.animation != "idle":
+				$AnimatedSprite2D.animation = "idle"
+	
 	move_and_slide()
 
-#Se detectan las teclas numericas para activar el cambio de armas
+#Se detectan las teclas para diversas acciones
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("Arma0"):
-		equiparArma(armas[0])
-	elif event.is_action_pressed("Arma1"):
-		equiparArma(armas[1])
-	
+	# Armas
+	for i in range(armas.size()):
+		if event.is_action_pressed("Arma" + str(i)):
+			equiparArma(armas[i])
+	# Movimiento
+	if event.is_action_pressed("Dash"):
+			dash()
+
+func dash():
+	if Dasheando:
+		return
+	Dasheando = true
+	#Aplica la velocidad.x en base a la direccion
+	if $AnimatedSprite2D.flip_h:
+		velocity.x = -1 * DASHSPEED
+	else:
+		velocity.x = 1 * DASHSPEED
+	#Se giran los sprites en base a la direccion
+	$AnimatedSprite2D.animation = "Dash"
+	$AnimatedSprite2D.play()
+	await get_tree().create_timer(DashDuracion).timeout
+	Dasheando = false
+
 func equiparArma(rutaArma: String):
 	#Se quita el arma actual
 	if armaSeleccionada and armaSeleccionada.is_inside_tree():

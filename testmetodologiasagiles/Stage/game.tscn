@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=4 uid="uid://dl8jsa52egkva"]
+[gd_scene load_steps=6 format=4 uid="uid://dl8jsa52egkva"]
 
 [ext_resource type="Texture2D" uid="uid://biqhb3t8cfne" path="res://Sprites/world_tileset.png" id="2_axohr"]
 [ext_resource type="PackedScene" uid="uid://dmmqmtr2blf3k" path="res://Player/player.tscn" id="2_e2o6t"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4m8wv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m1d6b"]
 texture = ExtResource("2_axohr")
@@ -153,6 +155,7 @@ texture = ExtResource("2_axohr")
 
 [sub_resource type="TileSet" id="TileSet_feb5d"]
 physics_layer_0/collision_layer = 1
+physics_layer_0/physics_material = SubResource("PhysicsMaterial_4m8wv")
 sources/1 = SubResource("TileSetAtlasSource_m1d6b")
 
 [node name="Game" type="Node2D"]
@@ -162,7 +165,7 @@ tile_map_data = PackedByteArray("AADz////AQAGAAEAAADz//7/AQAGAAEAAADz//3/AQAGAAE
 tile_set = SubResource("TileSet_feb5d")
 
 [node name="Player" parent="." instance=ExtResource("2_e2o6t")]
-position = Vector2(-158, -47)
+position = Vector2(-132, 333)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(3.5, 3.5)
