@@ -14,6 +14,7 @@ func _process(_delta):
 	#Detecta en tiempo real si se esta manteniendo pulsado el clic izq del mouse
 	laserVisible = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	if laserVisible:
+		
 		var Laser = global_position
 		var Mouse = get_global_mouse_position()
 		
@@ -35,10 +36,11 @@ func _process(_delta):
 		queue_redraw()
 	else:
 		queue_redraw()
-	
+
+
 #Si el laser esta activado se dibuja desde su posicion hasta la posicion del mouse
 func _draw():
-	if not laserVisible:
+	if !laserVisible:
 		return
 	
 	var startLocal = Vector2.ZERO
