@@ -6,7 +6,7 @@ var distanciaMaxima = 40
 
 func _process(delta):
 	escudoActivado = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
-	var Player = get_parent().global_position
+	var Player = get_parent().get_parent().global_position
 	var Mouse = get_global_mouse_position()
 	var direccion = Mouse - Player
 	var distancia = direccion.length()

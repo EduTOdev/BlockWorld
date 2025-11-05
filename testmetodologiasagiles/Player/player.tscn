@@ -123,3 +123,7 @@ target_position = Vector2(0, -2)
 
 [node name="WeaponHolder" type="Node2D" parent="."]
 position = Vector2(5, 3)
+
+[node name="RayCastFront" type="RayCast2D" parent="."]
+position = Vector2(3, 3)
+target_position = Vector2(2, 0)

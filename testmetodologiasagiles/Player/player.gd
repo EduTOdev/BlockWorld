@@ -26,6 +26,9 @@ var raycastDer: RayCast2D
 # Funcion para automaticamente equipar el arma0
 func _ready():
 	equiparArma(armas[0])
+	var escenaHUD = load("res://Player/HUD/HUD.tscn")
+	var nuevoHud = escenaHUD.instantiate()
+	$Camera2D.add_child(nuevoHud)
 
 # Se inicia el proceso de fisicas de godot
 func _physics_process(delta: float) -> void:
