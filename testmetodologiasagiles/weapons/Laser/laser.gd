@@ -14,7 +14,7 @@ func _process(_delta):
 	#Detecta en tiempo real si se esta manteniendo pulsado el clic izq del mouse
 	laserVisible = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	if laserVisible:
-		if get_parent().get_parent().get_child(5).is_colliding():
+		if get_parent().get_child(0).is_colliding():
 				laserVisible = false
 				return
 		var Laser = global_position

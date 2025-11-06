@@ -1,12 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpuwtwuca6ll2"]
+[gd_scene load_steps=2 format=3 uid="uid://cpuwtwuca6ll2"]
 
 [ext_resource type="Script" uid="uid://ov0lwq12rrm3" path="res://Player/HUD/Hud.gd" id="1_6lrxr"]
-[ext_resource type="Texture2D" uid="uid://85hxs0pdn7mf" path="res://Player/HUD/CorazonFull.png" id="1_m6s6l"]
 
-[node name="Hud" type="Node2D"]
+[node name="Hud" type="CanvasLayer"]
+layer = 0
 script = ExtResource("1_6lrxr")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-149, -77)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_m6s6l")
+[node name="HP" type="Node2D" parent="."]

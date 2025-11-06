@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dlxx77vphqu2c"]
+
+[ext_resource type="Texture2D" uid="uid://85hxs0pdn7mf" path="res://Player/HUD/HP/CorazonFull.png" id="1_b6ee8"]
+
+[node name="Sprite2D" type="Sprite2D"]
+texture = ExtResource("1_b6ee8")

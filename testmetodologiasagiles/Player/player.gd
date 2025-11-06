@@ -26,9 +26,6 @@ var raycastDer: RayCast2D
 # Funcion para automaticamente equipar el arma0
 func _ready():
 	equiparArma(armas[0])
-	var escenaHUD = load("res://Player/HUD/HUD.tscn")
-	var nuevoHud = escenaHUD.instantiate()
-	$Camera2D.add_child(nuevoHud)
 
 # Se inicia el proceso de fisicas de godot
 func _physics_process(delta: float) -> void:
@@ -67,7 +64,16 @@ func _physics_process(delta: float) -> void:
 			if $AnimatedSprite2D.animation != "moving":
 				$AnimatedSprite2D.animation = "moving"
 				$AnimatedSprite2D.play()
-			$WeaponHolder.position.x = 5 * Direction
+			if Direction == 1:
+				$AnimatedSprite2D.position.x = 0
+				$WeaponHolder.position.x = 5
+				$WeaponHolder/RayCastFront.position.x = -2
+				$WeaponHolder/RayCastFront.target_position.x = 2
+			else: if Direction == -1:
+				$AnimatedSprite2D.position.x = 1
+				$WeaponHolder.position.x = -4
+				$WeaponHolder/RayCastFront.position.x = 2
+				$WeaponHolder/RayCastFront.target_position.x = -2
 		else:
 			#Si se suelta la tecla de movimiento se va reduciendo su velocidad gradualmente hasta llegar a 0
 			velocity.x = move_toward(velocity.x, 0, SPEED)

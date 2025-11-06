@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://85hxs0pdn7mf"
-path="res://.godot/imported/CorazonFull.png-514a7b8509079b86961d02cd2d59c694.ctex"
+uid="uid://dg15rxxthlg2h"
+path="res://.godot/imported/CorazonFullNo.png-1301f90a2a3c4f5505e71101433a4b6d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/HUD/CorazonFull.png"
-dest_files=["res://.godot/imported/CorazonFull.png-514a7b8509079b86961d02cd2d59c694.ctex"]
+source_file="res://Player/HUD/HP/CorazonFullNo.png"
+dest_files=["res://.godot/imported/CorazonFullNo.png-1301f90a2a3c4f5505e71101433a4b6d.ctex"]
 
 [params]
 
