@@ -7,6 +7,7 @@ extends CharacterBody2D
 @export var DashDuracion = 0.2
 var Direction
 var Dasheando = false
+var HP
 
 # Aqui se guarda el arma actual y la lista de armas del player
 var armaSeleccionada: Node2D
@@ -26,6 +27,7 @@ var raycastDer: RayCast2D
 # Funcion para automaticamente equipar el arma0
 func _ready():
 	equiparArma(armas[0])
+	#HP = Gamestate.hud.obtenerHPTotal()
 
 # Se inicia el proceso de fisicas de godot
 func _physics_process(delta: float) -> void:
@@ -90,9 +92,10 @@ func _input(event: InputEvent) -> void:
 			equiparArma(armas[i])
 	# Movimiento
 	if event.is_action_pressed("Dash"):
-			dash()
+		dash()
 
 func dash():
+	#Gamestate.hud.actualizarActualHP(HP)
 	if Dasheando:
 		return
 	Dasheando = true
