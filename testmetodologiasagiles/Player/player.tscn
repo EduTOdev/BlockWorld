@@ -113,11 +113,11 @@ autoplay = "idle"
 position = Vector2(0.5, 3)
 shape = SubResource("RectangleShape2D_onrkg")
 
-[node name="RayCastDerecha" type="RayCast2D" parent="."]
+[node name="RayCastTopDerecha" type="RayCast2D" parent="."]
 position = Vector2(3, -10)
 target_position = Vector2(0, -2)
 
-[node name="RayCastIzquierda" type="RayCast2D" parent="."]
+[node name="RayCastTopIzquierda" type="RayCast2D" parent="."]
 position = Vector2(-2, -10)
 target_position = Vector2(0, -2)
 

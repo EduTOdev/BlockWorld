@@ -6,8 +6,9 @@ extends CharacterBody2D
 @export var DASHSPEED = 300.0
 @export var DashDuracion = 0.2
 var Direction
+var lastDirection = 0
 var Dasheando = false
-var HP
+var Dashes = 1
 
 # Aqui se guarda el arma actual y la lista de armas del player
 var armaSeleccionada: Node2D
@@ -21,32 +22,33 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 # Variable para el coyote time
 var tiempoAire: float
 # Raycasts para la correccion de esquinas
-var raycastIzq: RayCast2D
-var raycastDer: RayCast2D
+var raycastTopIzq: RayCast2D
+var raycastTopDer: RayCast2D
 
 # Funcion para automaticamente equipar el arma0
 func _ready():
+	Gamestate.player = self
 	equiparArma(armas[0])
-	#HP = Gamestate.hud.obtenerHPTotal()
 
 # Se inicia el proceso de fisicas de godot
 func _physics_process(delta: float) -> void:
 	#Si no esta tocando el suelo le aplica la gravedad en su velocidad.y y aumenta tiempoAire en base
 	#al tiempo que estuvo cayendo para aplicar coyote time
-	if not is_on_floor():
+	if not is_on_floor() and !Dasheando:
 		velocity.y += gravity * delta
 		tiempoAire += delta
-	else:
+	elif is_on_floor():
 		#Si toca el suelo reinicia su tiempoAire a 0
-		tiempoAire = 0;
+		tiempoAire = 0
+		Dashes = 1
 	
 	#Le indicamos su respectivo raycast a las variables
-	raycastIzq = $RayCastIzquierda
-	raycastDer = $RayCastDerecha
+	raycastTopIzq = $RayCastTopIzquierda
+	raycastTopDer = $RayCastTopDerecha
 	
-	if raycastIzq.is_colliding() and !raycastDer.is_colliding(): # Correcion de esquinas Izq -> Der
+	if raycastTopIzq.is_colliding() and !raycastTopDer.is_colliding(): # Correcion de esquinas Izq -> Der
 		position.x += 5
-	else: if !raycastIzq.is_colliding() and raycastDer.is_colliding(): # Correcion de esquinas Der -> Izq
+	else: if !raycastTopIzq.is_colliding() and raycastTopDer.is_colliding(): # Correcion de esquinas Der -> Izq
 		position.x -= 5
 	
 	# Manipular el salto del player
@@ -59,29 +61,19 @@ func _physics_process(delta: float) -> void:
 	Direction = Input.get_axis("ui_left", "ui_right")
 	if !Dasheando:
 		if Direction:
-			#Aplica la velocidad.x en base a la direccion
-			velocity.x = Direction * SPEED
-			#Se giran los sprites en base a la direccion
 			$AnimatedSprite2D.flip_h = Direction < 0
+			velocity.x = Direction * SPEED
 			if $AnimatedSprite2D.animation != "moving":
 				$AnimatedSprite2D.animation = "moving"
 				$AnimatedSprite2D.play()
-			if Direction == 1:
-				$AnimatedSprite2D.position.x = 0
-				$WeaponHolder.position.x = 5
-				$WeaponHolder/RayCastFront.position.x = -2
-				$WeaponHolder/RayCastFront.target_position.x = 2
-			else: if Direction == -1:
-				$AnimatedSprite2D.position.x = 1
-				$WeaponHolder.position.x = -4
-				$WeaponHolder/RayCastFront.position.x = 2
-				$WeaponHolder/RayCastFront.target_position.x = -2
+			if Direction != lastDirection:
+				lastDirection = Direction
+				ajustar_offsets(Direction)
 		else:
 			#Si se suelta la tecla de movimiento se va reduciendo su velocidad gradualmente hasta llegar a 0
 			velocity.x = move_toward(velocity.x, 0, SPEED)
 			if velocity.x == 0 and $AnimatedSprite2D.animation != "idle":
 				$AnimatedSprite2D.animation = "idle"
-	
 	move_and_slide()
 
 #Se detectan las teclas para diversas acciones
@@ -95,10 +87,11 @@ func _input(event: InputEvent) -> void:
 		dash()
 
 func dash():
-	#Gamestate.hud.actualizarActualHP(HP)
-	if Dasheando:
+	if Dasheando or Dashes <= 0:
 		return
 	Dasheando = true
+	Dashes -= 1
+	velocity.y = 0
 	#Aplica la velocidad.x en base a la direccion
 	if $AnimatedSprite2D.flip_h:
 		velocity.x = -1 * DASHSPEED
@@ -121,3 +114,15 @@ func equiparArma(rutaArma: String):
 	#Se agrega la arma como child de WeaponHolder y actualiza el arma actual
 	$WeaponHolder.add_child(nuevaArma)
 	armaSeleccionada = nuevaArma
+
+func ajustar_offsets(dir):
+	if dir == 1:
+		$AnimatedSprite2D.position.x = 0
+		$WeaponHolder.position.x = 5
+		$WeaponHolder/RayCastFront.position.x = -2
+		$WeaponHolder/RayCastFront.target_position.x = 2
+	elif dir == -1:
+		$AnimatedSprite2D.position.x = 1
+		$WeaponHolder.position.x = -4
+		$WeaponHolder/RayCastFront.position.x = 2
+		$WeaponHolder/RayCastFront.target_position.x = -2

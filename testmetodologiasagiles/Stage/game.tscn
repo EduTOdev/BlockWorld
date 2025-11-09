@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=4 uid="uid://dl8jsa52egkva"]
+[gd_scene load_steps=9 format=4 uid="uid://dl8jsa52egkva"]
 
 [ext_resource type="Script" uid="uid://d0tekik7g3cos" path="res://Stage/game.gd" id="1_axohr"]
 [ext_resource type="Texture2D" uid="uid://biqhb3t8cfne" path="res://Sprites/world_tileset.png" id="2_axohr"]
 [ext_resource type="PackedScene" uid="uid://dmmqmtr2blf3k" path="res://Player/player.tscn" id="2_e2o6t"]
+[ext_resource type="Script" uid="uid://bqjioj6iyeynm" path="res://Stage/camera.gd" id="4_m1d6b"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4m8wv"]
 
@@ -156,7 +157,7 @@ texture = ExtResource("2_axohr")
 9:2/size_in_atlas = Vector2i(3, 1)
 9:2/0 = 0
 9:5/0 = 0
-9:5/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, -6.2950544, 8, 8, -8, 8)
+9:5/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, -6.29505, 8, 8, -8, 8)
 
 [sub_resource type="TileSet" id="TileSet_feb5d"]
 physics_layer_0/collision_layer = 1
@@ -179,7 +180,9 @@ position = Vector2(-132, 333)
 collision_layer = 2
 collision_mask = 3
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(-132, 333)
 zoom = Vector2(3.5, 3.5)
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
+script = ExtResource("4_m1d6b")
