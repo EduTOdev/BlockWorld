@@ -157,7 +157,8 @@ texture = ExtResource("2_axohr")
 9:2/size_in_atlas = Vector2i(3, 1)
 9:2/0 = 0
 9:5/0 = 0
-9:5/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, -6.29505, 8, 8, -8, 8)
+9:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+9:5/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSet" id="TileSet_feb5d"]
 physics_layer_0/collision_layer = 1
@@ -168,7 +169,6 @@ physics_layer_1/physics_material = SubResource("PhysicsMaterial_axohr")
 sources/1 = SubResource("TileSetAtlasSource_m1d6b")
 
 [node name="Game" type="Node2D"]
-position = Vector2(0, -1)
 script = ExtResource("1_axohr")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]

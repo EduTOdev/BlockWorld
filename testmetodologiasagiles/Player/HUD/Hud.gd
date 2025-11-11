@@ -1,7 +1,10 @@
 extends CanvasLayer
 
-const origenX = 30
-const origenY = 30
+const origenHPX = 30
+const origenHPY = 30
+const origenManaX = 30
+const origenManaY = 70
+
 
 func _ready() -> void:
 	Gamestate.hud = self
@@ -9,8 +12,14 @@ func _ready() -> void:
 		var escenaHP = load("res://Player/HUD/HP/Corazon.tscn")
 		var nuevoCorazon = escenaHP.instantiate()
 		$HP.add_child(nuevoCorazon)
-		nuevoCorazon.position.x = origenX + (i * 40)
-		nuevoCorazon.position.y = origenY
+		nuevoCorazon.position.x = origenHPX + (i * 40)
+		nuevoCorazon.position.y = origenHPY
+	for i in Gamestate.totalMana:
+		var escenaMana = load("res://Player/HUD/Mana/ManaBola.tscn")
+		var nuevoBola = escenaMana.instantiate()
+		$Mana.add_child(nuevoBola)
+		nuevoBola.position.x = origenManaX + (i * 30)
+		nuevoBola.position.y = origenManaY
 
 func agregarHPTotal():
 	Gamestate.totalHP += 1
@@ -30,8 +39,8 @@ func actualizarHPTotal():
 		var escenaHP = load("res://Player/HUD/HP/Corazon.tscn")
 		var nuevoCorazon = escenaHP.instantiate()
 		$HP.add_child(nuevoCorazon)
-		nuevoCorazon.position.x = origenX + (i * 40)
-		nuevoCorazon.position.y = origenY
+		nuevoCorazon.position.x = origenHPX + (i * 40)
+		nuevoCorazon.position.y = origenHPY
 
 func actualizarActualHP():
 	var indice = 0
@@ -40,4 +49,34 @@ func actualizarActualHP():
 			child.texture = load("res://Player/HUD/HP/CorazonFull.png")
 		else:
 			child.texture = load("res://Player/HUD/HP/CorazonFullNo.png")
+		indice += 1
+
+func agregarManaTotal():
+	Gamestate.totalMana += 1
+	actualizarManaTotal()
+
+func disminuirManaTotal():
+	if Gamestate.totalMana == 1:
+		return
+	Gamestate.totalMana -= 1
+	actualizarManaTotal()
+
+func actualizarManaTotal():
+	for child in $Mana.get_children():
+		child.queue_free()
+		
+	for i in Gamestate.totalMana:
+		var escenaMana = load("res://Player/HUD/Mana/ManaBola.tscn")
+		var nuevoBola = escenaMana.instantiate()
+		$Mana.add_child(nuevoBola)
+		nuevoBola.position.x = origenManaX + (i * 30)
+		nuevoBola.position.y = origenManaY
+
+func actualizarActualMana():
+	var indice = 0
+	for child in $Mana.get_children():
+		if indice < Gamestate.actualMana:
+			child.texture = load("res://Player/HUD/Mana/ManaFull.png")
+		else:
+			child.texture = load("res://Player/HUD/Mana/ManaFullNo.png")
 		indice += 1

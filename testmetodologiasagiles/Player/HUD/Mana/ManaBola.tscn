@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://d32nk8b102rt5"]
+
+[ext_resource type="Texture2D" uid="uid://g04nrfvyggkr" path="res://Player/HUD/Mana/ManaFull.png" id="1_6isge"]
+
+[node name="Sprite2D" type="Sprite2D"]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("1_6isge")

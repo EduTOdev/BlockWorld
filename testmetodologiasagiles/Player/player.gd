@@ -3,8 +3,10 @@ extends CharacterBody2D
 # Parametros Movimiento
 @export var SPEED = 150.0
 @export var JUMP_VELOCITY = -350.0
-@export var DASHSPEED = 300.0
+@export var DASHSPEED = 350.0
 @export var DashDuracion = 0.2
+@export var jump_buffer_time := 0.15
+var jump_buffer_timer := 0.0
 var Direction
 var lastDirection = 0
 var Dasheando = false
@@ -41,6 +43,16 @@ func _physics_process(delta: float) -> void:
 		#Si toca el suelo reinicia su tiempoAire a 0
 		tiempoAire = 0
 		Dashes = 1
+		if jump_buffer_timer > 0:
+			velocity.y = JUMP_VELOCITY
+			jump_buffer_timer = 0
+			tiempoAire = 1
+	
+	if Dasheando:
+		velocity.y = 0
+	
+	if jump_buffer_timer > 0:
+		jump_buffer_timer -= delta
 	
 	#Le indicamos su respectivo raycast a las variables
 	raycastTopIzq = $RayCastTopIzquierda
@@ -50,6 +62,9 @@ func _physics_process(delta: float) -> void:
 		position.x += 5
 	else: if !raycastTopIzq.is_colliding() and raycastTopDer.is_colliding(): # Correcion de esquinas Der -> Izq
 		position.x -= 5
+	
+	if $RayCastBottomFront1.is_colliding() and !$RayCastBottomFront2.is_colliding() and Dasheando:
+		position.y -= 8
 	
 	# Manipular el salto del player
 	if Input.is_action_just_pressed("ui_accept") and tiempoAire < 0.1: # Coyote time
@@ -85,13 +100,14 @@ func _input(event: InputEvent) -> void:
 	# Movimiento
 	if event.is_action_pressed("Dash"):
 		dash()
+	if event.is_action_pressed("ui_accept"):
+		jump_buffer_timer = jump_buffer_time
 
 func dash():
 	if Dasheando or Dashes <= 0:
 		return
 	Dasheando = true
 	Dashes -= 1
-	velocity.y = 0
 	#Aplica la velocidad.x en base a la direccion
 	if $AnimatedSprite2D.flip_h:
 		velocity.x = -1 * DASHSPEED
@@ -121,8 +137,16 @@ func ajustar_offsets(dir):
 		$WeaponHolder.position.x = 5
 		$WeaponHolder/RayCastFront.position.x = -2
 		$WeaponHolder/RayCastFront.target_position.x = 2
+		$RayCastBottomFront1.position.x = 3
+		$RayCastBottomFront1.target_position.x = 4
+		$RayCastBottomFront2.position.x = 3
+		$RayCastBottomFront2.target_position.x = 4
 	elif dir == -1:
 		$AnimatedSprite2D.position.x = 1
 		$WeaponHolder.position.x = -4
 		$WeaponHolder/RayCastFront.position.x = 2
 		$WeaponHolder/RayCastFront.target_position.x = -2
+		$RayCastBottomFront1.position.x = -2
+		$RayCastBottomFront1.target_position.x = -4
+		$RayCastBottomFront2.position.x = -2
+		$RayCastBottomFront2.target_position.x = -4

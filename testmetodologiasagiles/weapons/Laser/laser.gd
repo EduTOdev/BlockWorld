@@ -5,18 +5,28 @@ var laserVisible = false
 @export var LaserColor := Color.RED
 @export var LaserAnchura := 3.0
 @export var collisionMask: int = 1
+@export var manaRecoveryDelay := 0.5
 
 #Posicion Impacto
 var hitPosition: Vector2
 var hitCollider: Node = null
 
-func _process(_delta):
+# Control de delay
+var recoveryTimer := 0.0
+
+func _process(delta):
 	#Detecta en tiempo real si se esta manteniendo pulsado el clic izq del mouse
 	laserVisible = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	if laserVisible:
-		if get_parent().get_child(0).is_colliding():
+		recoveryTimer = manaRecoveryDelay
+		
+		if get_parent().get_child(0).is_colliding() or Gamestate.actualMana <= 0:
 				laserVisible = false
+				queue_redraw()
 				return
+		Gamestate.actualMana -= delta
+		Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
+		Gamestate.hud.actualizarActualMana()
 		var Laser = global_position
 		var Mouse = get_global_mouse_position()
 		
@@ -37,6 +47,13 @@ func _process(_delta):
 			hitCollider = null
 		queue_redraw()
 	else:
+		if recoveryTimer > 0:
+			recoveryTimer -= delta
+		else:
+			if Gamestate.actualMana < Gamestate.totalMana:
+				Gamestate.actualMana += delta
+				Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
+				Gamestate.hud.actualizarActualMana()
 		queue_redraw()
 
 
