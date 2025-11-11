@@ -54,7 +54,7 @@ func actualizarActualHP():
 func agregarManaTotal():
 	Gamestate.totalMana += 1
 	actualizarManaTotal()
-
+ 
 func disminuirManaTotal():
 	if Gamestate.totalMana == 1:
 		return

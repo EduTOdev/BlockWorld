@@ -20,7 +20,7 @@ func _process(delta):
 			visible = false
 			return
 		visible = true
-		Gamestate.actualMana -= delta * 2
+		Gamestate.actualMana -= delta
 		Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
 		Gamestate.hud.actualizarActualMana()
 		var direccionNormalizada = Vector2.ZERO

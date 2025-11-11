@@ -61,7 +61,6 @@ func _process(delta):
 func _draw():
 	if !laserVisible:
 		return
-	
 	var startLocal = Vector2.ZERO
 	var endLocal = to_local(hitPosition)
 	draw_line(startLocal, endLocal, LaserColor, LaserAnchura)
