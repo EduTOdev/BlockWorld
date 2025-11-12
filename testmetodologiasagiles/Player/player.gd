@@ -3,8 +3,9 @@ extends CharacterBody2D
 # Parametros Movimiento
 @export var SPEED = 150.0
 @export var JUMP_VELOCITY = -350.0
+@export var WALL_JUMP_VELOCITY = Vector2(150, -350)
 @export var DASHSPEED = 350.0
-@export var DashDuracion = 0.2
+@export var DashDuracion = 0.15
 @export var jump_buffer_time := 0.15
 var jump_buffer_timer := 0.0
 var Direction
@@ -12,6 +13,15 @@ var lastDirection = 0
 var Dasheando = false
 var Dashes = 1
 var invulnerable = false
+var wall_stick_time := 0.0
+var wall_sliding := false
+
+# Wall jump variables
+var can_wall_jump := false
+var wall_jump_cooldown := 0.0
+var last_wall_dir := 0
+var wall_jump_lock_time := 0.15
+var wall_jump_timer := 0.0
 
 # Aqui se guarda el arma actual y la lista de armas del player
 var armaSeleccionada: Node2D
@@ -44,6 +54,8 @@ func _physics_process(delta: float) -> void:
 		#Si toca el suelo reinicia su tiempoAire a 0
 		tiempoAire = 0
 		Dashes = 1
+		wall_jump_cooldown = 0
+		jump_buffer_timer = 0
 		if jump_buffer_timer > 0:
 			velocity.y = JUMP_VELOCITY
 			jump_buffer_timer = 0
@@ -52,8 +64,31 @@ func _physics_process(delta: float) -> void:
 	if Dasheando:
 		velocity.y = 0
 	
-	if jump_buffer_timer > 0:
-		jump_buffer_timer -= delta
+	var wall_dir := 0
+	if is_on_wall():
+		wall_dir = sign(get_wall_normal().x)
+		last_wall_dir = wall_dir
+		wall_stick_time = 0.2
+	else:
+		if wall_stick_time > 0:
+			if wall_dir != Direction:
+				wall_stick_time = 0
+			wall_stick_time -= delta
+			wall_dir = last_wall_dir
+		else:
+			wall_dir = 0
+	
+	# Wall slide
+	wall_sliding = false
+	if wall_dir != 0 and not is_on_floor() and velocity.y > 0 and wall_jump_cooldown <= 0:
+		wall_sliding = true
+		velocity.y = min(velocity.y, 100) # Control de velocidad de caída
+		can_wall_jump = true
+	else:
+		can_wall_jump = false
+	
+	if wall_jump_timer > 0:
+		wall_jump_timer -= delta
 	
 	#Le indicamos su respectivo raycast a las variables
 	raycastTopIzq = $RayCastTopIzquierda
@@ -73,23 +108,41 @@ func _physics_process(delta: float) -> void:
 		# Se aumenta tiempoAire a un valor superior para indicar que ya se salto
 		tiempoAire = 1
 	
+	if Input.is_action_just_pressed("ui_accept") and can_wall_jump:
+		velocity.x -= -last_wall_dir * WALL_JUMP_VELOCITY.x
+		velocity.y = WALL_JUMP_VELOCITY.y
+		
+		can_wall_jump = false
+		wall_jump_cooldown = 0.25
+		jump_buffer_timer = 0
+		tiempoAire = 1
+		wall_jump_timer = wall_jump_lock_time
+	
 	#Se recibe la input de movimiento del personaje y guarda 1 o -1 para indicar la direccion
 	Direction = Input.get_axis("ui_left", "ui_right")
+	
+	# Cooldown para evitar reengancharse
+	if wall_jump_cooldown > 0:
+		wall_jump_cooldown -= delta
+		if Direction != 0 and sign(Direction) == last_wall_dir:
+			Direction = 0
+	
 	if !Dasheando:
-		if Direction:
-			$AnimatedSprite2D.flip_h = Direction < 0
-			velocity.x = Direction * SPEED
-			if $AnimatedSprite2D.animation != "moving":
-				$AnimatedSprite2D.animation = "moving"
-				$AnimatedSprite2D.play()
-			if Direction != lastDirection:
-				lastDirection = Direction
-				ajustar_offsets(Direction)
-		else:
-			#Si se suelta la tecla de movimiento se va reduciendo su velocidad gradualmente hasta llegar a 0
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-			if velocity.x == 0 and $AnimatedSprite2D.animation != "idle":
-				$AnimatedSprite2D.animation = "idle"
+		if wall_jump_timer <= 0:
+			if Direction:
+				$AnimatedSprite2D.flip_h = Direction < 0
+				velocity.x = Direction * SPEED
+				if $AnimatedSprite2D.animation != "moving":
+					$AnimatedSprite2D.animation = "moving"
+					$AnimatedSprite2D.play()
+				if Direction != lastDirection:
+					lastDirection = Direction
+					ajustar_offsets(Direction)
+			else:
+				velocity.x = move_toward(velocity.x, 0, SPEED)
+				if velocity.x == 0 and $AnimatedSprite2D.animation != "idle":
+					$AnimatedSprite2D.animation = "idle"
+
 	move_and_slide()
 	
 	for i in range(get_slide_collision_count()):
