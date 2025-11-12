@@ -3,5 +3,5 @@
 [ext_resource type="Texture2D" uid="uid://g04nrfvyggkr" path="res://Player/HUD/Mana/ManaFull.png" id="1_6isge"]
 
 [node name="Sprite2D" type="Sprite2D"]
-scale = Vector2(0.75, 0.75)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("1_6isge")

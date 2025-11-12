@@ -11,11 +11,10 @@ script = ExtResource("1_axohr")
 [node name="Nivel1" parent="." instance=ExtResource("2_m1d6b")]
 
 [node name="Player" parent="." instance=ExtResource("2_e2o6t")]
-position = Vector2(-24, 48)
+position = Vector2(-64, 48)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(-24, 48)
+position = Vector2(-64, 48)
 zoom = Vector2(3.5, 3.5)
-position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 script = ExtResource("4_m1d6b")

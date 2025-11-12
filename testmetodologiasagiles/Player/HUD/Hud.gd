@@ -3,24 +3,32 @@ extends CanvasLayer
 const origenHPX = 30
 const origenHPY = 30
 const origenManaX = 30
-const origenManaY = 70
-
+const origenManaY = 80
+const distanciaHP = 55
+const distanciaMana = 40
 
 func _ready() -> void:
 	Gamestate.hud = self
+	dibujarHP()
+	dibujarMana()
+
+func dibujarHP():
 	for i in Gamestate.totalHP:
 		var escenaHP = load("res://Player/HUD/HP/Corazon.tscn")
 		var nuevoCorazon = escenaHP.instantiate()
 		$HP.add_child(nuevoCorazon)
-		nuevoCorazon.position.x = origenHPX + (i * 40)
+		nuevoCorazon.position.x = origenHPX + (i * distanciaHP)
 		nuevoCorazon.position.y = origenHPY
+
+func dibujarMana():
 	for i in Gamestate.totalMana:
 		var escenaMana = load("res://Player/HUD/Mana/ManaBola.tscn")
 		var nuevoBola = escenaMana.instantiate()
 		$Mana.add_child(nuevoBola)
-		nuevoBola.position.x = origenManaX + (i * 30)
+		nuevoBola.position.x = origenManaX + (i * distanciaMana)
 		nuevoBola.position.y = origenManaY
 
+#-------- HP --------
 func agregarHPTotal():
 	Gamestate.totalHP += 1
 	actualizarHPTotal()
@@ -35,12 +43,7 @@ func actualizarHPTotal():
 	for child in $HP.get_children():
 		child.queue_free()
 		
-	for i in Gamestate.totalHP:
-		var escenaHP = load("res://Player/HUD/HP/Corazon.tscn")
-		var nuevoCorazon = escenaHP.instantiate()
-		$HP.add_child(nuevoCorazon)
-		nuevoCorazon.position.x = origenHPX + (i * 40)
-		nuevoCorazon.position.y = origenHPY
+	dibujarHP()
 
 func actualizarActualHP():
 	var indice = 0
@@ -51,6 +54,7 @@ func actualizarActualHP():
 			child.texture = load("res://Player/HUD/HP/CorazonFullNo.png")
 		indice += 1
 
+#-------- Mana --------
 func agregarManaTotal():
 	Gamestate.totalMana += 1
 	actualizarManaTotal()
@@ -65,12 +69,7 @@ func actualizarManaTotal():
 	for child in $Mana.get_children():
 		child.queue_free()
 		
-	for i in Gamestate.totalMana:
-		var escenaMana = load("res://Player/HUD/Mana/ManaBola.tscn")
-		var nuevoBola = escenaMana.instantiate()
-		$Mana.add_child(nuevoBola)
-		nuevoBola.position.x = origenManaX + (i * 30)
-		nuevoBola.position.y = origenManaY
+	dibujarMana()
 
 func actualizarActualMana():
 	var indice = 0

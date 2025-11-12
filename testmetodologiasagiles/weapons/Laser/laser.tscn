@@ -1,14 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://dh742v67cwiiu"]
+[gd_scene load_steps=4 format=3 uid="uid://dh742v67cwiiu"]
 
-[ext_resource type="Script" uid="uid://cbibijk7uhs6x" path="res://weapons/Laser/laser.gd" id="1_qnqx8"]
+[ext_resource type="Script" uid="uid://hmugr7n3tx" path="res://weapons/Laser/laser2.gd" id="1_qnqx8"]
+
+[sub_resource type="Gradient" id="Gradient_qnqx8"]
+colors = PackedColorArray(0.662452, 0.662452, 0.662452, 1, 1, 1, 1, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ptaev"]
+particle_flag_disable_z = true
+spread = 60.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
 
 [node name="Laser" type="Node2D"]
 script = ExtResource("1_qnqx8")
 
 [node name="Line2D" type="Line2D" parent="."]
-
-[node name="CastingParticles2D" type="GPUParticles2D" parent="."]
-
-[node name="BeamParticles2D" type="GPUParticles2D" parent="."]
+width = 3.0
+default_color = Color(1, 0, 0, 1)
+gradient = SubResource("Gradient_qnqx8")
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
 
 [node name="CollisionParticles2D" type="GPUParticles2D" parent="."]
+amount = 20
+lifetime = 0.3
+speed_scale = 2.0
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_ptaev")

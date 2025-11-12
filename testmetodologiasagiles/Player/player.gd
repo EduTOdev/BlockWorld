@@ -42,6 +42,8 @@ var raycastTopDer: RayCast2D
 func _ready():
 	Gamestate.player = self
 	equiparArma(armas[0])
+	await get_tree().create_timer(0.1).timeout
+	Gamestate.camera.follow_target = self
 
 # Se inicia el proceso de fisicas de godot
 func _physics_process(delta: float) -> void:
@@ -69,13 +71,16 @@ func _physics_process(delta: float) -> void:
 		wall_dir = sign(get_wall_normal().x)
 		last_wall_dir = wall_dir
 		wall_stick_time = 0.2
+		tiempoAire = 0
 	else:
-		if wall_stick_time > 0:
-			if wall_dir != Direction:
-				wall_stick_time = 0
+		# Usa el raycast frontal para verificar si sigue cerca de una pared
+		var front_ray = $WeaponHolder/RayCastFront
+		var still_near_wall = front_ray.is_colliding()
+		if wall_stick_time > 0 and still_near_wall:
 			wall_stick_time -= delta
 			wall_dir = last_wall_dir
 		else:
+			wall_stick_time = 0
 			wall_dir = 0
 	
 	# Wall slide
@@ -84,6 +89,7 @@ func _physics_process(delta: float) -> void:
 		wall_sliding = true
 		velocity.y = min(velocity.y, 100) # Control de velocidad de caída
 		can_wall_jump = true
+		Dashes = 1
 	else:
 		can_wall_jump = false
 	
@@ -103,20 +109,24 @@ func _physics_process(delta: float) -> void:
 		position.y -= 8
 	
 	# Manipular el salto del player
-	if Input.is_action_just_pressed("ui_accept") and tiempoAire < 0.1: # Coyote time
+	if Input.is_action_just_pressed("ui_accept") and tiempoAire < 0.1 and not can_wall_jump: # Coyote time
 		velocity.y = JUMP_VELOCITY
 		# Se aumenta tiempoAire a un valor superior para indicar que ya se salto
 		tiempoAire = 1
+		$AnimatedSprite2D.animation = "jumping"
+		$AnimatedSprite2D.play()
 	
-	if Input.is_action_just_pressed("ui_accept") and can_wall_jump:
+	if Input.is_action_just_pressed("ui_accept") and can_wall_jump and tiempoAire < 0.1:
 		velocity.x -= -last_wall_dir * WALL_JUMP_VELOCITY.x
 		velocity.y = WALL_JUMP_VELOCITY.y
 		
 		can_wall_jump = false
-		wall_jump_cooldown = 0.25
+		wall_jump_cooldown = 0.15
 		jump_buffer_timer = 0
 		tiempoAire = 1
 		wall_jump_timer = wall_jump_lock_time
+		$AnimatedSprite2D.animation = "jumping"
+		$AnimatedSprite2D.play()
 	
 	#Se recibe la input de movimiento del personaje y guarda 1 o -1 para indicar la direccion
 	Direction = Input.get_axis("ui_left", "ui_right")
@@ -132,7 +142,7 @@ func _physics_process(delta: float) -> void:
 			if Direction:
 				$AnimatedSprite2D.flip_h = Direction < 0
 				velocity.x = Direction * SPEED
-				if $AnimatedSprite2D.animation != "moving":
+				if velocity.y == 0 and $AnimatedSprite2D.animation != "moving":
 					$AnimatedSprite2D.animation = "moving"
 					$AnimatedSprite2D.play()
 				if Direction != lastDirection:
@@ -140,7 +150,7 @@ func _physics_process(delta: float) -> void:
 					ajustar_offsets(Direction)
 			else:
 				velocity.x = move_toward(velocity.x, 0, SPEED)
-				if velocity.x == 0 and $AnimatedSprite2D.animation != "idle":
+				if velocity.x == 0 and velocity.y == 0 and $AnimatedSprite2D.animation != "idle":
 					$AnimatedSprite2D.animation = "idle"
 
 	move_and_slide()
@@ -153,6 +163,28 @@ func _physics_process(delta: float) -> void:
 			var tile_data = tilemap.get_cell_tile_data(coords)
 			if tile_data and tile_data.get_custom_data("hazard"):
 				_on_hazard_hit()
+	
+		# --- Efecto de Squash & Stretch ---
+	var stretch_strength = clamp(abs(velocity.y) / 400.0, 0.0, 0.1) # 600 es velocidad máxima esperada al caer
+	var sprite = $AnimatedSprite2D
+	# Si está cayendo -> estirar
+	if velocity.y > 0 and not is_on_floor() and not is_on_wall():
+		sprite.scale.x = lerp(sprite.scale.x, 1.0 - stretch_strength, 0.2)
+		sprite.scale.y = lerp(sprite.scale.y, 1.0 + stretch_strength, 0.2)
+		if velocity.y > 300 and $AnimatedSprite2D.animation != "falling":
+			$AnimatedSprite2D.animation = "falling"
+			$AnimatedSprite2D.play()
+
+	# Si toca el suelo -> squash (aplanarse brevemente)
+	elif is_on_floor():
+		var impact_strength = clamp(abs(velocity.y) / 400.0, 0.0, 0.1)
+		sprite.scale.x = lerp(sprite.scale.x, 1.0 + impact_strength, 0.3)
+		sprite.scale.y = lerp(sprite.scale.y, 1.0 - impact_strength, 0.3)
+		
+		# Regresar al tamaño normal poco después
+		await get_tree().create_timer(0.08).timeout
+		sprite.scale = sprite.scale.lerp(Vector2(1, 1), 0.3)
+
 
 #Se detectan las teclas para diversas acciones
 func _input(event: InputEvent) -> void:
@@ -219,6 +251,7 @@ func _on_hazard_hit():
 		return
 	Gamestate.camera.startShake(0.7)
 	invulnerable = true
+	$AnimatedSprite2D.modulate = Color.RED
 	Gamestate.actualHP -= 1
 	Gamestate.hud.actualizarActualHP()
 
@@ -229,6 +262,8 @@ func _on_hazard_hit():
 		# Respawnea al último punto
 		await get_tree().create_timer(0.1).timeout
 		Gamestate.respawnPlayer()
+		$AnimatedSprite2D.modulate = Color.WHITE
 	
 	await get_tree().create_timer(0.2).timeout
 	invulnerable = false
+	
