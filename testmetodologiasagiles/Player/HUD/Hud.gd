@@ -74,7 +74,7 @@ func actualizarManaTotal():
 func actualizarActualMana():
 	var indice = 0
 	for child in $Mana.get_children():
-		if indice < Gamestate.actualMana:
+		if indice < floor(Gamestate.actualMana):
 			child.texture = load("res://Player/HUD/Mana/ManaFull.png")
 		else:
 			child.texture = load("res://Player/HUD/Mana/ManaFullNo.png")

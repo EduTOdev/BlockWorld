@@ -7,6 +7,7 @@ extends CharacterBody2D
 @export var DASHSPEED = 350.0
 @export var DashDuracion = 0.15
 @export var jump_buffer_time := 0.15
+@export var healingMaxManaCost = 4
 var jump_buffer_timer := 0.0
 var Direction
 var lastDirection = 0
@@ -15,6 +16,9 @@ var Dashes = 1
 var invulnerable = false
 var wall_stick_time := 0.0
 var wall_sliding := false
+var healManaConsumed = 0
+var healStatus = false
+var justHealed = false
 
 # Wall jump variables
 var can_wall_jump := false
@@ -22,6 +26,7 @@ var wall_jump_cooldown := 0.0
 var last_wall_dir := 0
 var wall_jump_lock_time := 0.15
 var wall_jump_timer := 0.0
+var wall_dir = 0
 
 # Aqui se guarda el arma actual y la lista de armas del player
 var armaSeleccionada: Node2D
@@ -35,8 +40,8 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 # Variable para el coyote time
 var tiempoAire: float
 # Raycasts para la correccion de esquinas
-var raycastTopIzq: RayCast2D
-var raycastTopDer: RayCast2D
+@onready var raycastTopIzq: RayCast2D = $RayCastTopIzquierda
+@onready var raycastTopDer: RayCast2D = $RayCastTopDerecha
 
 # Funcion para automaticamente equipar el arma0
 func _ready():
@@ -53,35 +58,13 @@ func _physics_process(delta: float) -> void:
 		velocity.y += gravity * delta
 		tiempoAire += delta
 	elif is_on_floor():
-		#Si toca el suelo reinicia su tiempoAire a 0
-		tiempoAire = 0
-		Dashes = 1
-		wall_jump_cooldown = 0
-		jump_buffer_timer = 0
-		if jump_buffer_timer > 0:
-			velocity.y = JUMP_VELOCITY
-			jump_buffer_timer = 0
-			tiempoAire = 1
+		tocarSuelo()
 	
 	if Dasheando:
 		velocity.y = 0
 	
-	var wall_dir := 0
-	if is_on_wall():
-		wall_dir = sign(get_wall_normal().x)
-		last_wall_dir = wall_dir
-		wall_stick_time = 0.2
-		tiempoAire = 0
-	else:
-		# Usa el raycast frontal para verificar si sigue cerca de una pared
-		var front_ray = $WeaponHolder/RayCastFront
-		var still_near_wall = front_ray.is_colliding()
-		if wall_stick_time > 0 and still_near_wall:
-			wall_stick_time -= delta
-			wall_dir = last_wall_dir
-		else:
-			wall_stick_time = 0
-			wall_dir = 0
+	wall_dir = 0
+	detectarPared(delta)
 	
 	# Wall slide
 	wall_sliding = false
@@ -96,10 +79,6 @@ func _physics_process(delta: float) -> void:
 	if wall_jump_timer > 0:
 		wall_jump_timer -= delta
 	
-	#Le indicamos su respectivo raycast a las variables
-	raycastTopIzq = $RayCastTopIzquierda
-	raycastTopDer = $RayCastTopDerecha
-	
 	if raycastTopIzq.is_colliding() and !raycastTopDer.is_colliding(): # Correcion de esquinas Izq -> Der
 		position.x += 5
 	else: if !raycastTopIzq.is_colliding() and raycastTopDer.is_colliding(): # Correcion de esquinas Der -> Izq
@@ -110,23 +89,10 @@ func _physics_process(delta: float) -> void:
 	
 	# Manipular el salto del player
 	if Input.is_action_just_pressed("ui_accept") and tiempoAire < 0.1 and not can_wall_jump: # Coyote time
-		velocity.y = JUMP_VELOCITY
-		# Se aumenta tiempoAire a un valor superior para indicar que ya se salto
-		tiempoAire = 1
-		$AnimatedSprite2D.animation = "jumping"
-		$AnimatedSprite2D.play()
+		jump()
 	
 	if Input.is_action_just_pressed("ui_accept") and can_wall_jump and tiempoAire < 0.1:
-		velocity.x -= -last_wall_dir * WALL_JUMP_VELOCITY.x
-		velocity.y = WALL_JUMP_VELOCITY.y
-		
-		can_wall_jump = false
-		wall_jump_cooldown = 0.15
-		jump_buffer_timer = 0
-		tiempoAire = 1
-		wall_jump_timer = wall_jump_lock_time
-		$AnimatedSprite2D.animation = "jumping"
-		$AnimatedSprite2D.play()
+		wallJump()
 	
 	#Se recibe la input de movimiento del personaje y guarda 1 o -1 para indicar la direccion
 	Direction = Input.get_axis("ui_left", "ui_right")
@@ -137,21 +103,18 @@ func _physics_process(delta: float) -> void:
 		if Direction != 0 and sign(Direction) == last_wall_dir:
 			Direction = 0
 	
-	if !Dasheando:
-		if wall_jump_timer <= 0:
-			if Direction:
-				$AnimatedSprite2D.flip_h = Direction < 0
-				velocity.x = Direction * SPEED
-				if velocity.y == 0 and $AnimatedSprite2D.animation != "moving":
-					$AnimatedSprite2D.animation = "moving"
-					$AnimatedSprite2D.play()
-				if Direction != lastDirection:
-					lastDirection = Direction
-					ajustar_offsets(Direction)
-			else:
-				velocity.x = move_toward(velocity.x, 0, SPEED)
-				if velocity.x == 0 and velocity.y == 0 and $AnimatedSprite2D.animation != "idle":
-					$AnimatedSprite2D.animation = "idle"
+	var healing = Input.is_action_pressed("Heal")
+	if healing and is_on_floor() and !justHealed:
+		startHealing(delta)
+	else:
+		healManaConsumed = 0
+		
+	healing = Input.is_action_just_released("Heal")
+	if healing:
+		justHealed = false
+	
+	if !Dasheando and !healStatus:
+		move()
 
 	move_and_slide()
 	
@@ -184,7 +147,6 @@ func _physics_process(delta: float) -> void:
 		# Regresar al tamaño normal poco después
 		await get_tree().create_timer(0.08).timeout
 		sprite.scale = sprite.scale.lerp(Vector2(1, 1), 0.3)
-
 
 #Se detectan las teclas para diversas acciones
 func _input(event: InputEvent) -> void:
@@ -267,3 +229,91 @@ func _on_hazard_hit():
 	await get_tree().create_timer(0.2).timeout
 	invulnerable = false
 	
+func heal():
+	if Gamestate.actualHP < Gamestate.totalHP:
+		Gamestate.actualHP += 1
+		Gamestate.hud.actualizarActualHP()
+		Gamestate.camera.startShake(1.0)
+		justHealed = true
+
+func tocarSuelo():
+	#Si toca el suelo reinicia su tiempoAire a 0
+	tiempoAire = 0
+	Dashes = 1
+	wall_jump_cooldown = 0
+	jump_buffer_timer = 0
+	if jump_buffer_timer > 0:
+		velocity.y = JUMP_VELOCITY
+		jump_buffer_timer = 0
+		tiempoAire = 1
+
+func detectarPared(delta):
+	if is_on_wall():
+		wall_dir = sign(get_wall_normal().x)
+		last_wall_dir = wall_dir
+		wall_stick_time = 0.2
+		tiempoAire = 0
+	else:
+		# Usa el raycast frontal para verificar si sigue cerca de una pared
+		var front_ray = $WeaponHolder/RayCastFront
+		var still_near_wall = front_ray.is_colliding()
+		if wall_stick_time > 0 and still_near_wall:
+			wall_stick_time -= delta
+			wall_dir = last_wall_dir
+		else:
+			wall_stick_time = 0
+			wall_dir = 0
+
+func jump():
+	velocity.y = JUMP_VELOCITY
+	# Se aumenta tiempoAire a un valor superior para indicar que ya se salto
+	tiempoAire = 1
+	$AnimatedSprite2D.animation = "jumping"
+	$AnimatedSprite2D.play()
+
+func wallJump():
+	velocity.x -= -last_wall_dir * WALL_JUMP_VELOCITY.x
+	velocity.y = WALL_JUMP_VELOCITY.y
+	
+	can_wall_jump = false
+	wall_jump_cooldown = 0.15
+	jump_buffer_timer = 0
+	tiempoAire = 1
+	wall_jump_timer = wall_jump_lock_time
+	$AnimatedSprite2D.animation = "jumping"
+	$AnimatedSprite2D.play()
+
+func startHealing(delta):
+	if Gamestate.actualMana > 0:
+		var ManaConsumed = delta * 4
+		Gamestate.actualMana -= ManaConsumed
+		Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
+		Gamestate.hud.actualizarActualMana()
+		Gamestate.camera.startShake(0.2)
+		healManaConsumed += ManaConsumed
+		
+		if Gamestate.actualMana <= 0:
+			healManaConsumed = 0
+			justHealed = true
+		
+		if healManaConsumed >= 4:
+			heal()
+			healManaConsumed = 0
+	else:
+		healManaConsumed = 0
+
+func move():
+	if wall_jump_timer <= 0:
+		if Direction:
+			$AnimatedSprite2D.flip_h = Direction < 0
+			velocity.x = Direction * SPEED
+			if velocity.y == 0 and $AnimatedSprite2D.animation != "moving":
+				$AnimatedSprite2D.animation = "moving"
+				$AnimatedSprite2D.play()
+			if Direction != lastDirection:
+				lastDirection = Direction
+				ajustar_offsets(Direction)
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+			if velocity.x == 0 and velocity.y == 0 and $AnimatedSprite2D.animation != "idle":
+				$AnimatedSprite2D.animation = "idle"
