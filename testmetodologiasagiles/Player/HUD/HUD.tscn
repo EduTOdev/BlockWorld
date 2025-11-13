@@ -9,3 +9,5 @@ script = ExtResource("1_6lrxr")
 [node name="HP" type="Node2D" parent="."]
 
 [node name="Mana" type="Node2D" parent="."]
+
+[node name="Status" type="Node2D" parent="."]

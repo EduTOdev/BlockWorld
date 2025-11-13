@@ -1,9 +1,11 @@
 extends CanvasLayer
 
-const origenHPX = 30
-const origenHPY = 30
-const origenManaX = 30
-const origenManaY = 80
+const OrigenBorderX = 70
+const OrigenBorderY = 65
+const origenHPX = 160
+const origenHPY = 40
+const origenManaX = 160
+const origenManaY = 90
 const distanciaHP = 55
 const distanciaMana = 40
 
@@ -11,6 +13,22 @@ func _ready() -> void:
 	Gamestate.hud = self
 	dibujarHP()
 	dibujarMana()
+	dibujarBorder()
+
+func dibujarBorder():
+	var escenaBorder = load("res://Player/HUD/Status/border.tscn")
+	var NuevoBorder = escenaBorder.instantiate()
+	$Status.add_child(NuevoBorder)
+	NuevoBorder.position.x = OrigenBorderX
+	NuevoBorder.position.y = OrigenBorderY
+
+func changeStatus(status: String):
+	if status == "Default":
+		$Status.get_child(0).get_child(0).texture = load("res://Player/HUD/Status/statusDefault.png")
+	if status == "Damaged":
+		$Status.get_child(0).get_child(0).texture = load("res://Player/HUD/Status/statusDamaged.png")
+	if status == "1HP":
+		$Status.get_child(0).get_child(0).texture = load("res://Player/HUD/Status/status1HP.png")
 
 func dibujarHP():
 	for i in Gamestate.totalHP:

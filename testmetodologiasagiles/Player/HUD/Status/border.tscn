@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmq8agp6tnplv"]
+
+[ext_resource type="Texture2D" uid="uid://msxf4ce4baeb" path="res://Player/HUD/Status/bordePlayer.png" id="1_qk787"]
+[ext_resource type="Texture2D" uid="uid://dgqjuf1n4rwtn" path="res://Player/HUD/Status/statusDefault.png" id="2_unmis"]
+
+[node name="Border" type="Sprite2D"]
+texture = ExtResource("1_qk787")
+
+[node name="Status" type="Sprite2D" parent="."]
+scale = Vector2(0.29, 0.29)
+texture = ExtResource("2_unmis")

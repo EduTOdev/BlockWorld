@@ -1,7 +1,7 @@
 extends Node2D
 
 # ======================
-# ⚡ Parámetros del Láser
+#  Parámetros del Láser
 # ======================
 var laserVisible = false
 @export var LaserColor := Color.RED : set = set_color
@@ -9,51 +9,55 @@ var laserVisible = false
 @export var collisionMask: int = 1
 @export var manaRecoveryDelay := 0.5
 
-# 💥 Posición de impacto
+# Posición de impacto
 var hitPosition: Vector2
 var hitCollider: Node = null
 
-# ⏳ Control de delay
+# Control de delay
 var recoveryTimer := 0.0
 
 # ======================
-# 🌌 Nodos de Efectos
+# Nodos de Efectos
 # ======================
 @onready var line_2d: Line2D = $Line2D
 @onready var collision_particles: GPUParticles2D = $CollisionParticles2D
+@onready var laser_particles: GPUParticles2D = $LaserParticles2D
 
 # ======================
-# 🔧 Inicialización
+# Inicialización
 # ======================
 func _ready() -> void:
 	set_color(LaserColor)
 	_hide_beam()
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://weapons/Laser/laser.gdshader")
 
 # ======================
-# 🎨 Color sincronizado
+# Color sincronizado
 # ======================
 func set_color(new_color: Color) -> void:
 	LaserColor = new_color
 	if !is_inside_tree():
 		return
-	if line_2d:
-		line_2d.modulate = new_color
 	if collision_particles:
 		collision_particles.modulate = new_color
+	if laser_particles:
+		laser_particles.modulate = new_color
 
 # ======================
-# 🔁 Lógica Principal
+# Lógica Principal
 # ======================
 func _process(delta):
 	laserVisible = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 
 	if laserVisible:
 		recoveryTimer = manaRecoveryDelay
+		
+
 
 		if get_parent().get_child(0).is_colliding() or Gamestate.actualMana <= 0:
 			laserVisible = false
 			_hide_beam()
-			queue_redraw()
 			return
 
 		# Gasta maná mientras se dispara
@@ -80,7 +84,6 @@ func _process(delta):
 			hitCollider = null
 
 		_update_beam()
-		queue_redraw()
 	else:
 		_hide_beam()
 		if recoveryTimer > 0:
@@ -90,24 +93,19 @@ func _process(delta):
 				Gamestate.actualMana += delta
 				Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
 				Gamestate.hud.actualizarActualMana()
-		queue_redraw()
 
 # ======================
-# ✏️ Dibujo visual
-# ======================
-func _draw():
-	if !laserVisible:
-		return
-	var startLocal = Vector2.ZERO
-	var endLocal = to_local(hitPosition)
-	draw_line(startLocal, endLocal, LaserColor, LaserAnchura)
-
-# ======================
-# 💫 Control de Partículas
+# Control de Partículas
 # ======================
 func _update_beam():
 	line_2d.visible = true
 	collision_particles.emitting = true
+	laser_particles.emitting = true
+
+	var laser = hitPosition - global_position
+	var direction = laser.normalized()
+	var angle = direction.angle()
+	var length = laser.length()
 
 	# Actualiza línea
 	line_2d.clear_points()
@@ -117,9 +115,18 @@ func _update_beam():
 	# Posiciones de partículas
 	collision_particles.global_position = hitPosition
 	collision_particles.look_at(global_position)
+	
+	laser_particles.global_position = global_position.lerp(hitPosition, 0.5)
+	laser_particles.rotation = angle
+	
+	var mat := laser_particles.process_material
+	if mat and mat is ParticleProcessMaterial:
+		# Ajustamos la caja de emisión (centrada)
+		mat.emission_box_extents.x = length / 2.0
 
 func _hide_beam():
 	if !line_2d:
 		return
 	line_2d.visible = false
 	collision_particles.emitting = false
+	laser_particles.emitting = false

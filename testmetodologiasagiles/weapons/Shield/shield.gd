@@ -26,7 +26,7 @@ func _process(delta):
 		var direccionNormalizada = Vector2.ZERO
 		if distancia != 0:
 			direccionNormalizada = direccion.normalized()
-		var distanciaFinal = min(distancia, 40)
+		var distanciaFinal = min(distancia, distanciaMaxima)
 		global_position = Player + direccionNormalizada * distanciaFinal
 		if direccion != Vector2.ZERO:
 			rotation = direccion.angle()
