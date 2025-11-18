@@ -296,6 +296,31 @@ func _on_hazard_hit():
 	await get_tree().create_timer(0.2).timeout
 	invulnerable = false
 
+func _taken_hit():
+	if invulnerable:
+		return
+	Gamestate.camera.startShake(0.5)
+	invulnerable = true
+	$AnimatedSprite2D.modulate = Color.RED
+	Gamestate.hud.changeStatus("Damaged")
+	Gamestate.actualHP -= 1
+	Gamestate.hud.actualizarActualHP()
+	
+	if Gamestate.actualHP <= 0:
+		# Puedes reiniciar nivel completo aquí si quieres
+		print("Game Over")
+	else:
+		# Respawnea al último punto
+		await get_tree().create_timer(0.1).timeout
+		$AnimatedSprite2D.modulate = Color.WHITE
+		await get_tree().create_timer(0.2).timeout
+		if Gamestate.actualHP == 1:
+			Gamestate.hud.changeStatus("1HP")
+		else:
+			Gamestate.hud.changeStatus("Default")
+	await get_tree().create_timer(0.2).timeout
+	invulnerable = false
+
 #===============================================================================================
 #-------------------------------------- Acciones -----------------------------------------------
 #===============================================================================================

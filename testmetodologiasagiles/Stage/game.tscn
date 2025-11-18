@@ -1,20 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://dl8jsa52egkva"]
+[gd_scene load_steps=4 format=3 uid="uid://dl8jsa52egkva"]
 
 [ext_resource type="Script" uid="uid://d0tekik7g3cos" path="res://Stage/game.gd" id="1_axohr"]
-[ext_resource type="PackedScene" uid="uid://dmmqmtr2blf3k" path="res://Player/player.tscn" id="2_e2o6t"]
-[ext_resource type="PackedScene" uid="uid://dg0eixnmu7lg2" path="res://Stage/Nivel1/Nivel1.tscn" id="2_m1d6b"]
+[ext_resource type="PackedScene" uid="uid://dorbnioisinsf" path="res://Menu/MainMenu/MainMenu.tscn" id="3_axohr"]
 [ext_resource type="Script" uid="uid://bqjioj6iyeynm" path="res://Stage/camera.gd" id="4_m1d6b"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_axohr")
-
-[node name="Nivel1" parent="." instance=ExtResource("2_m1d6b")]
-
-[node name="Player" parent="." instance=ExtResource("2_e2o6t")]
-position = Vector2(-64, 48)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-64, 48)
 zoom = Vector2(3.5, 3.5)
 position_smoothing_speed = 10.0
 script = ExtResource("4_m1d6b")
+
+[node name="MainMenu" parent="." instance=ExtResource("3_axohr")]

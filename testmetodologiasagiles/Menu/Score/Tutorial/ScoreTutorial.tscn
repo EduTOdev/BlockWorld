@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3 uid="uid://qrerbenb7uty"]
+
+[ext_resource type="Script" uid="uid://ckkt6xuw5ocin" path="res://Menu/Score/Tutorial/score_tutorial.gd" id="1_54mls"]
+[ext_resource type="Script" uid="uid://cs3dtfun2b16v" path="res://Menu/Score/Tutorial/button.gd" id="2_obunq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2hvvo"]
+font_size = 32
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
+
+[node name="ScoreTutorial" type="CanvasLayer"]
+script = ExtResource("1_54mls")
+
+[node name="Title" type="Label" parent="."]
+offset_right = 1152.0
+offset_bottom = 151.0
+text = "¡¡¡¡¡Tutorial Completado!!11!!!11"
+label_settings = SubResource("LabelSettings_2hvvo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Score" type="Label" parent="."]
+offset_top = 168.0
+offset_right = 1152.0
+offset_bottom = 319.0
+label_settings = SubResource("LabelSettings_2hvvo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EduScore" type="Label" parent="."]
+offset_top = 328.0
+offset_right = 1152.0
+offset_bottom = 479.0
+text = "World Record: (Edu): 00:05:79"
+label_settings = SubResource("LabelSettings_2hvvo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+offset_left = 435.0
+offset_top = 464.0
+offset_right = 673.0
+offset_bottom = 586.0
+text = "Siguiente Nivel"
+script = ExtResource("2_obunq")
+
+[connection signal="pressed" from="Button" to="Button" method="_on_pressed"]

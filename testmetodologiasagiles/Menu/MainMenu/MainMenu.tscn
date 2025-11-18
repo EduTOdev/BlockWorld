@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://dorbnioisinsf"]
+
+[ext_resource type="Script" uid="uid://cbbkm02b2uitu" path="res://Menu/MainMenu/button.gd" id="1_sij70"]
+
+[node name="MainMenu" type="CanvasLayer"]
+
+[node name="Button" type="Button" parent="."]
+offset_left = 452.0
+offset_top = 179.0
+offset_right = 717.0
+offset_bottom = 264.0
+text = "Start"
+script = ExtResource("1_sij70")
+
+[connection signal="pressed" from="Button" to="Button" method="_on_pressed"]

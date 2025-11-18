@@ -12,7 +12,7 @@ config_version=5
 
 config/name="TestMetodologiasAgiles"
 run/main_scene="uid://dl8jsa52egkva"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 run/max_fps=120
 config/icon="res://icon.svg"
 
@@ -71,6 +71,7 @@ Heal={
 2d_physics/layer_4="Enemy"
 2d_physics/layer_5="Lasers"
 2d_physics/layer_6="Checkpoints"
+2d_physics/layer_7="Door"
 
 [physics]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://85hxs0pdn7mf"
-path="res://.godot/imported/CorazonFull.png-fad881868a3ff7f4a216937add6a3a40.ctex"
+uid="uid://drsd3db2c5k14"
+path="res://.godot/imported/spriteSheetDoor.png-71def3078196c2fe3fdd72da2c649543.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/HUD/HP/CorazonFull.png"
-dest_files=["res://.godot/imported/CorazonFull.png-fad881868a3ff7f4a216937add6a3a40.ctex"]
+source_file="res://Sprites/spriteSheetDoor.png"
+dest_files=["res://.godot/imported/spriteSheetDoor.png-71def3078196c2fe3fdd72da2c649543.ctex"]
 
 [params]
 

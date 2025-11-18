@@ -52,8 +52,6 @@ func _process(delta):
 
 	if laserVisible:
 		recoveryTimer = manaRecoveryDelay
-		
-
 
 		if get_parent().get_child(0).is_colliding() or Gamestate.actualMana <= 0:
 			laserVisible = false
@@ -79,6 +77,8 @@ func _process(delta):
 		if result:
 			hitPosition = result.position
 			hitCollider = result.collider
+			if hitCollider and hitCollider.has_method("apply_damage"):
+				hitCollider.apply_damage(delta * 30)
 		else:
 			hitPosition = Mouse
 			hitCollider = null
