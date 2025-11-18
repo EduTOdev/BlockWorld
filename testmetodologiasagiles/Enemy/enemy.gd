@@ -61,7 +61,7 @@ func get_dynamic_jump_time(distance: float) -> float:
 	return lerp(min_jump_time, max_jump_time, normalized)
 
 func _process(delta: float) -> void:
-	if !dead:
+	if !dead and $AnimatedSprite2D:
 		if is_charging and $AnimatedSprite2D.animation != "charging":
 			$AnimatedSprite2D.animation = "charging"
 			$AnimatedSprite2D.play()
@@ -95,19 +95,24 @@ func _physics_process(delta):
 		velocity.y = max_vertical_force
 
 	move_and_slide()
-	# Si toca el suelo termina salto
-	if is_jumping and is_on_floor():
-		is_jumping = false
-		velocity = Vector2.ZERO
-		$AnimatedSprite2D.rotation = 0.0
-		$Explosion.animation = "explosion"
-		$Explosion.play()
-		jump_cooldown = 1.0
-		if player_in_explosion_range:
-			Gamestate.player._taken_hit()
-		await get_tree().create_timer(0.3).timeout
-		$Explosion.animation = "default"
-		$Explosion.play()
+	
+	if !dead:
+		# Si toca el suelo termina salto
+		if is_jumping and is_on_floor():
+			is_jumping = false
+			velocity = Vector2.ZERO
+			$AnimatedSprite2D.rotation = 0.0
+			$Explosion.animation = "explosion"
+			$Explosion.play()
+			jump_cooldown = 1.0
+			if player_in_explosion_range:
+				Gamestate.player._taken_hit()
+			await get_tree().create_timer(0.3).timeout
+			$Explosion.animation = "default"
+			$Explosion.play()
+		
+		for i in range(get_slide_collision_count()):
+			checkCollisions(i)
 
 func apply_damage(amount: float) -> void:
 	health -= amount
@@ -115,9 +120,9 @@ func apply_damage(amount: float) -> void:
 
 	if health <= 0 and !dead:
 		die()
-		dead = true
 
 func die():
+	dead = true
 	remove_child($AnimatedSprite2D)
 	$Explosion.animation = "explosion"
 	$Explosion.play()
@@ -133,3 +138,13 @@ func _on_explosion_area_2d_body_entered(body) -> void:
 func _on_explosion_area_2d_body_exited(body) -> void:
 	if body == Gamestate.player:
 		player_in_explosion_range = false
+
+func checkCollisions(i):
+	var collision = get_slide_collision(i)
+	var tilemap = collision.get_collider()
+	if tilemap is TileMapLayer:
+		var coords = tilemap.local_to_map(collision.get_position())
+		var tile_data = tilemap.get_cell_tile_data(coords)
+		if tile_data and tile_data.get_custom_data("hazard"):
+			if !dead:
+				die()

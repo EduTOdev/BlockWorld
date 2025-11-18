@@ -72,6 +72,7 @@ Heal={
 2d_physics/layer_5="Lasers"
 2d_physics/layer_6="Checkpoints"
 2d_physics/layer_7="Door"
+2d_physics/layer_8="Shield"
 
 [physics]
 

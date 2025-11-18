@@ -1,4 +1,4 @@
-extends Node2D
+extends CharacterBody2D
 
 #Parametros Escudo
 var escudoActivado = false
@@ -17,7 +17,7 @@ func _process(delta):
 	
 	if escudoActivado:
 		if Gamestate.actualMana <= 0:
-			visible = false
+			visible = true
 			return
 		visible = true
 		Gamestate.actualMana -= delta
@@ -39,3 +39,4 @@ func _process(delta):
 				Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
 				Gamestate.hud.actualizarActualMana()
 		visible = false
+		
