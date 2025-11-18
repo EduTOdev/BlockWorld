@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=4 uid="uid://dg0eixnmu7lg2"]
+[gd_scene load_steps=10 format=4 uid="uid://dg0eixnmu7lg2"]
 
 [ext_resource type="Texture2D" uid="uid://biqhb3t8cfne" path="res://Sprites/world_tileset.png" id="1_3v7io"]
 [ext_resource type="Script" uid="uid://cclx6ebr2e5cb" path="res://Stage/Tutorial/tutorial.gd" id="1_vdi1v"]
 [ext_resource type="PackedScene" uid="uid://bto1xpbaylbny" path="res://Stage/Checkpoint/Checkpoint.tscn" id="2_teh6k"]
 [ext_resource type="PackedScene" uid="uid://eei8mg70g8mv" path="res://Stage/Door/Door.tscn" id="3_8xyju"]
+[ext_resource type="PackedScene" uid="uid://g0jxkqkv1its" path="res://Enemy/Enemy.tscn" id="5_f0bev"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_vdi1v"]
 
@@ -199,3 +200,6 @@ position = Vector2(544, -176)
 position = Vector2(600, -288)
 
 [node name="Enemys" type="Node2D" parent="."]
+
+[node name="Enemy" parent="." instance=ExtResource("5_f0bev")]
+position = Vector2(367, 0)
