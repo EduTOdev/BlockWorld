@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcyn7r27njnre"
-path="res://.godot/imported/spritesheetEnemy.png-dd7b1d2ffd787948963c3fc999cdac63.ctex"
+uid="uid://bxm60h6hnpqny"
+path="res://.godot/imported/alchemyCircle2.png-7d0b8e483032b5f801ef3df45ddcb81d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/spritesheetEnemy.png"
-dest_files=["res://.godot/imported/spritesheetEnemy.png-dd7b1d2ffd787948963c3fc999cdac63.ctex"]
+source_file="res://weapons/Laser/alchemyCircle2.png"
+dest_files=["res://.godot/imported/alchemyCircle2.png-7d0b8e483032b5f801ef3df45ddcb81d.ctex"]
 
 [params]
 

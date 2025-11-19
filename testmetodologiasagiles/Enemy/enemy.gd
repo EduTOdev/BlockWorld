@@ -72,6 +72,9 @@ func _process(delta: float) -> void:
 			$AnimatedSprite2D.animation = "idle"
 			$AnimatedSprite2D.play()
 	
+	if is_charging:
+		velocity.x = 0
+	
 	if jump_cooldown > 0:
 		jump_cooldown -= delta
 		return
@@ -124,6 +127,7 @@ func apply_damage(amount: float) -> void:
 
 func die():
 	dead = true
+	set_physics_process(false)
 	remove_child($AnimatedSprite2D)
 	$Explosion.animation = "explosion"
 	$Explosion.play()

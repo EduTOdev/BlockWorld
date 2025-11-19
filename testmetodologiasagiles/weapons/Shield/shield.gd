@@ -17,9 +17,11 @@ func _process(delta):
 	
 	if escudoActivado:
 		if Gamestate.actualMana <= 0:
-			visible = true
+			visible = false
+			$CollisionPolygon2D.set_deferred("disabled", true)
 			return
 		visible = true
+		$CollisionPolygon2D.set_deferred("disabled", false)
 		Gamestate.actualMana -= delta
 		Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
 		Gamestate.hud.actualizarActualMana()
@@ -39,4 +41,4 @@ func _process(delta):
 				Gamestate.actualMana = clamp(Gamestate.actualMana, 0, Gamestate.totalMana)
 				Gamestate.hud.actualizarActualMana()
 		visible = false
-		
+		$CollisionPolygon2D.set_deferred("disabled", true)

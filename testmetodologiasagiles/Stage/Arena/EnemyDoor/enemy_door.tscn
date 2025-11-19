@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://c433tjkh0ek6j"]
+
+[ext_resource type="Script" uid="uid://mpeq4re50swn" path="res://Stage/Arena/EnemyDoor/enemy_door.gd" id="1_0e7oa"]
+[ext_resource type="Texture2D" uid="uid://c0muuy1egvtym" path="res://Sprites/enemydoor.png" id="1_e0epk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0e7oa"]
+size = Vector2(32, 48)
+
+[node name="EnemyDoor" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_0e7oa")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_e0epk")
+offset = Vector2(0, -42)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_0e7oa")
+disabled = true

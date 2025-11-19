@@ -35,6 +35,14 @@ var armas = [
 	"res://weapons/Laser/laser.tscn",
 	"res://weapons/Shield/shield.tscn"
 ]
+var alchemyMainCircles = [
+		"res://weapons/Laser/alchemyCircle1.png",
+		"res://weapons/Shield/alchemyCircle1.png"
+]
+var alchemyExtraCircles = [
+		"res://weapons/Laser/alchemyCircle2.png",
+		"res://weapons/Shield/alchemyCircle2.png"
+]
 
 # Parametros de gravedad predeterminados de godot
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -47,7 +55,7 @@ var tiempoAire: float
 # Funcion para automaticamente equipar el arma0
 func _ready():
 	Gamestate.player = self
-	equiparArma(armas[0])
+	equiparArma(armas[0], 0)
 	await get_tree().create_timer(0.1).timeout
 	Gamestate.camera.follow_target = self
 
@@ -129,7 +137,7 @@ func _input(event: InputEvent) -> void:
 	# Armas
 	for i in range(armas.size()):
 		if event.is_action_pressed("Arma" + str(i)):
-			equiparArma(armas[i])
+			equiparArma(armas[i], i)
 	# Movimiento
 	if event.is_action_pressed("Dash"):
 		dash()
@@ -325,7 +333,7 @@ func _taken_hit():
 #-------------------------------------- Acciones -----------------------------------------------
 #===============================================================================================
 
-func equiparArma(rutaArma: String):
+func equiparArma(rutaArma: String, alchemyCircle: int):
 	#Se quita el arma actual
 	if armaSeleccionada and armaSeleccionada.is_inside_tree():
 		armaSeleccionada.queue_free()
@@ -336,6 +344,8 @@ func equiparArma(rutaArma: String):
 	#Se agrega la arma como child de WeaponHolder y actualiza el arma actual
 	$WeaponHolder.add_child(nuevaArma)
 	armaSeleccionada = nuevaArma
+	$WeaponHolder/AlchemyCircleMain.texture = load(alchemyMainCircles[alchemyCircle])
+	$WeaponHolder/AlchemyCircleExtra.texture = load(alchemyExtraCircles[alchemyCircle])
 
 func startHealing(delta):
 	if Gamestate.actualMana > 0:

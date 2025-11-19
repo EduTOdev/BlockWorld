@@ -1,7 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://dmmqmtr2blf3k"]
+[gd_scene load_steps=23 format=3 uid="uid://dmmqmtr2blf3k"]
 
 [ext_resource type="Script" uid="uid://b2yqag2th46o6" path="res://Player/player.gd" id="1_onrkg"]
 [ext_resource type="Texture2D" uid="uid://dynxlnf0hgwsh" path="res://Sprites/spritesheetPlayer.png" id="2_4ntmi"]
+[ext_resource type="Script" uid="uid://bchlgm3twmxwt" path="res://weapons/alchemy_circle_extra.gd" id="3_gwnis"]
+[ext_resource type="Script" uid="uid://81hpv2fosrit" path="res://weapons/alchemy_circle_main.gd" id="4_k53q1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5htga"]
 atlas = ExtResource("2_4ntmi")
@@ -182,3 +184,11 @@ position = Vector2(5, 3)
 [node name="RayCastFront" type="RayCast2D" parent="WeaponHolder"]
 position = Vector2(-2, 0)
 target_position = Vector2(2, 0)
+
+[node name="AlchemyCircleExtra" type="Sprite2D" parent="WeaponHolder"]
+scale = Vector2(0.25, 0.25)
+script = ExtResource("3_gwnis")
+
+[node name="AlchemyCircleMain" type="Sprite2D" parent="WeaponHolder"]
+scale = Vector2(0.25, 0.25)
+script = ExtResource("4_k53q1")

@@ -19,7 +19,7 @@ particle_flag_disable_z = true
 emission_shape = 3
 emission_box_extents = Vector3(100, 4, 1)
 angle_min = -400.0
-angle_max = 400.00003
+angle_max = 400.0
 gravity = Vector3(0, 0.3, 0)
 
 [node name="Laser" type="Node2D"]
