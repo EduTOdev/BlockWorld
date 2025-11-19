@@ -17,8 +17,17 @@ var jump_cooldown := 0.0
 
 var player_in_explosion_range := false
 
+#HP
+@onready var lineGreen = $HP/Green
+@onready var lineRed = $HP/Red
+const maxWidthHP = 16
+
 # Parametros de gravedad predeterminados de godot
 var gravity := 1200.0
+
+func _ready() -> void:
+	lineGreen.global_position = Vector2(-12, -17)
+	lineRed.global_position = Vector2(12, -17)
 
 func _on_area_2d_body_entered(body) -> void:
 	if body == Gamestate.player:
@@ -72,8 +81,9 @@ func _process(delta: float) -> void:
 			$AnimatedSprite2D.animation = "idle"
 			$AnimatedSprite2D.play()
 	
-	if is_charging:
-		velocity.x = 0
+	lineGreen.global_position = Vector2(-12, -17)
+	lineRed.global_position = Vector2(12, -17)
+	drawHP()
 	
 	if jump_cooldown > 0:
 		jump_cooldown -= delta
@@ -86,6 +96,9 @@ func _process(delta: float) -> void:
 		start_jump_charge()
 
 func _physics_process(delta):
+	if is_on_floor():
+		velocity.x = move_toward(velocity.x, 0, delta * 2000)
+	
 	if is_jumping:
 		velocity.y += gravity * delta
 		if $AnimatedSprite2D:
@@ -108,9 +121,15 @@ func _physics_process(delta):
 			$AnimatedSprite2D.rotation = 0.0
 			$Explosion.animation = "explosion"
 			$Explosion.play()
+			var jumpDirection
+			if $AnimatedSprite2D.flip_h:
+				jumpDirection = 1
+			else:
+				jumpDirection = -1
 			jump_cooldown = 1.0
 			if player_in_explosion_range:
 				Gamestate.player._taken_hit()
+				velocity = Vector2(150 * jumpDirection, -100)
 			await get_tree().create_timer(0.3).timeout
 			$Explosion.animation = "default"
 			$Explosion.play()
@@ -120,6 +139,7 @@ func _physics_process(delta):
 
 func apply_damage(amount: float) -> void:
 	health -= amount
+	drawHP()
 	print("Enemy took damage! HP:", health)
 
 	if health <= 0 and !dead:
@@ -129,6 +149,8 @@ func die():
 	dead = true
 	set_physics_process(false)
 	remove_child($AnimatedSprite2D)
+	lineGreen.visible = false
+	lineRed.visible = false
 	$Explosion.animation = "explosion"
 	$Explosion.play()
 	await get_tree().create_timer(0.7).timeout
@@ -153,3 +175,14 @@ func checkCollisions(i):
 		if tile_data and tile_data.get_custom_data("hazard"):
 			if !dead:
 				die()
+
+func drawHP():
+	lineGreen.clear_points()
+	lineRed.clear_points()
+	lineGreen.add_point(Vector2(global_position.x, global_position.y))
+	lineGreen.add_point(Vector2(global_position.x + ((24.0 / 100.0) * health), global_position.y))
+	
+	if health != 100:
+		lineRed.add_point(Vector2(global_position.x, global_position.y))
+		lineRed.add_point(Vector2(global_position.x - ((24.0 / 100.0) * (100 - health)), global_position.y))
+	

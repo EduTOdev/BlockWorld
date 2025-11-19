@@ -248,6 +248,18 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Explosion/ExplosionArea2D"]
 shape = SubResource("CapsuleShape2D_vso2s")
 
+[node name="HP" type="Node2D" parent="."]
+
+[node name="Green" type="Line2D" parent="HP"]
+position = Vector2(-12, -17)
+width = 3.0
+default_color = Color(0, 1, 0, 1)
+
+[node name="Red" type="Line2D" parent="HP"]
+position = Vector2(12, -17)
+width = 3.0
+default_color = Color(1, 0, 0, 1)
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
 [connection signal="body_entered" from="Explosion/ExplosionArea2D" to="." method="_on_explosion_area_2d_body_entered"]

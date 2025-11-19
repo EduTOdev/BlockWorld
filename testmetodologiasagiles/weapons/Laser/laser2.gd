@@ -78,7 +78,7 @@ func _process(delta):
 			hitPosition = result.position
 			hitCollider = result.collider
 			if hitCollider and hitCollider.has_method("apply_damage"):
-				hitCollider.apply_damage(delta * 30)
+				hitCollider.apply_damage(delta * 50)
 		else:
 			hitPosition = Mouse
 			hitCollider = null
