@@ -201,5 +201,5 @@ position = Vector2(600, -288)
 
 [node name="Enemys" type="Node2D" parent="."]
 
-[node name="Enemy" parent="." instance=ExtResource("5_f0bev")]
-position = Vector2(367, 0)
+[node name="Enemy" parent="Enemys" instance=ExtResource("5_f0bev")]
+position = Vector2(384, 0)

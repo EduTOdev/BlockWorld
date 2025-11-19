@@ -51,7 +51,7 @@ func perform_jump():
 	var jump_time = get_dynamic_jump_time(distance)
 
 	velocity.x = dx / jump_time
-	velocity.y = (dy - 0.5 * gravity * jump_time * jump_time) / jump_time
+	velocity.y = (dy - 0.5 * gravity * pow(jump_time, 2)) / jump_time
 
 func get_dynamic_jump_time(distance: float) -> float:
 	# Normaliza un valor 0–1 basado en 0–300px de distancia
@@ -85,7 +85,8 @@ func _process(delta: float) -> void:
 func _physics_process(delta):
 	if is_jumping:
 		velocity.y += gravity * delta
-		$AnimatedSprite2D.rotation = velocity.angle() + rad_to_deg(-90)
+		if $AnimatedSprite2D:
+			$AnimatedSprite2D.rotation = velocity.angle() + rad_to_deg(-90)
 	else:
 		velocity.y += gravity * delta
 	

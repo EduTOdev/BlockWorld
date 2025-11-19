@@ -27,7 +27,7 @@ label_settings = SubResource("LabelSettings_2hvvo")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EduScore" type="Label" parent="."]
+[node name="WorldRecord" type="Label" parent="."]
 offset_top = 328.0
 offset_right = 1152.0
 offset_bottom = 479.0
