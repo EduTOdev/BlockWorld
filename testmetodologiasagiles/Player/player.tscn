@@ -170,14 +170,6 @@ target_position = Vector2(0, -2)
 position = Vector2(3, -10)
 target_position = Vector2(0, -2)
 
-[node name="RayCastBottomFront2" type="RayCast2D" parent="."]
-position = Vector2(3, 10)
-target_position = Vector2(4, 0)
-
-[node name="RayCastBottomFront1" type="RayCast2D" parent="."]
-position = Vector2(3, 16)
-target_position = Vector2(4, 0)
-
 [node name="WeaponHolder" type="Node2D" parent="."]
 position = Vector2(5, 3)
 

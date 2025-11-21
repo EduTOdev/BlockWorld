@@ -93,9 +93,6 @@ func _physics_process(delta: float) -> void:
 	else: if !raycastTopIzq.is_colliding() and raycastTopDer.is_colliding(): # Correcion de esquinas Der -> Izq
 		position.x -= 5
 	
-	if $RayCastBottomFront1.is_colliding() and !$RayCastBottomFront2.is_colliding() and Dasheando:
-		position.y -= 8
-	
 	# Manipular el salto del player
 	if Input.is_action_just_pressed("ui_accept") and tiempoAire < 0.1 and not can_wall_jump: # Coyote time
 		jump()
@@ -233,19 +230,11 @@ func ajustar_offsets(dir):
 		$WeaponHolder.position.x = 5
 		$WeaponHolder/RayCastFront.position.x = -2
 		$WeaponHolder/RayCastFront.target_position.x = 2
-		$RayCastBottomFront1.position.x = 3
-		$RayCastBottomFront1.target_position.x = 4
-		$RayCastBottomFront2.position.x = 3
-		$RayCastBottomFront2.target_position.x = 4
 	elif dir == -1:
 		$AnimatedSprite2D.position.x = 1
 		$WeaponHolder.position.x = -4
 		$WeaponHolder/RayCastFront.position.x = 2
 		$WeaponHolder/RayCastFront.target_position.x = -2
-		$RayCastBottomFront1.position.x = -2
-		$RayCastBottomFront1.target_position.x = -4
-		$RayCastBottomFront2.position.x = -2
-		$RayCastBottomFront2.target_position.x = -4
 
 func squashStretch():
 	var stretch_strength = clamp(abs(velocity.y) / 400.0, 0.0, 0.1) # 600 es velocidad máxima esperada al caer

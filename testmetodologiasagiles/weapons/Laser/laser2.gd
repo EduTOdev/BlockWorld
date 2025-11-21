@@ -5,8 +5,6 @@ extends Node2D
 # ======================
 var laserVisible = false
 @export var LaserColor := Color.RED : set = set_color
-@export var LaserAnchura := 3.0
-@export var collisionMask: int = 1
 @export var manaRecoveryDelay := 0.5
 
 # Posición de impacto
