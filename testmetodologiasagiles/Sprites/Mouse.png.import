@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcyn7r27njnre"
-path="res://.godot/imported/spritesheetEnemy.png-dd7b1d2ffd787948963c3fc999cdac63.ctex"
+uid="uid://dqhtlhg6y6i3p"
+path="res://.godot/imported/Mouse.png-361551b6e9ffa81d9cfb346c4cf8b443.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/spritesheetEnemy.png"
-dest_files=["res://.godot/imported/spritesheetEnemy.png-dd7b1d2ffd787948963c3fc999cdac63.ctex"]
+source_file="res://Sprites/Mouse.png"
+dest_files=["res://.godot/imported/Mouse.png-361551b6e9ffa81d9cfb346c4cf8b443.ctex"]
 
 [params]
 

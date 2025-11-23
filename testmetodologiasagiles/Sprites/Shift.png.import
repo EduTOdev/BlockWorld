@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcyn7r27njnre"
-path="res://.godot/imported/spritesheetEnemy.png-dd7b1d2ffd787948963c3fc999cdac63.ctex"
+uid="uid://drb51w0xtmyth"
+path="res://.godot/imported/Shift.png-103b8113968ab9a0a6ddeebb462aa45d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/spritesheetEnemy.png"
-dest_files=["res://.godot/imported/spritesheetEnemy.png-dd7b1d2ffd787948963c3fc999cdac63.ctex"]
+source_file="res://Sprites/Shift.png"
+dest_files=["res://.godot/imported/Shift.png-103b8113968ab9a0a6ddeebb462aa45d.ctex"]
 
 [params]
 

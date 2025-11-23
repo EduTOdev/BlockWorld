@@ -13,3 +13,7 @@ func changeLevel(level):
 		var escenaScore = load("res://Menu/Score/Tutorial/ScoreTutorial.tscn")
 		var nuevoScore = escenaScore.instantiate()
 		add_child(nuevoScore)
+	if level == 1:
+		var escenaScore = load("res://Menu/Score/Nivel1/ScoreNivel1.tscn")
+		var nuevoScore = escenaScore.instantiate()
+		add_child(nuevoScore)

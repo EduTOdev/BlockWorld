@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://dkmwdl26fm1gl"]
+
+[ext_resource type="Script" uid="uid://ckkt6xuw5ocin" path="res://Menu/Score/Tutorial/score_tutorial.gd" id="1_smc4b"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2hvvo"]
+font_size = 32
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
+
+[node name="ScoreTutorial" type="CanvasLayer"]
+script = ExtResource("1_smc4b")
+
+[node name="Title" type="Label" parent="."]
+offset_right = 1152.0
+offset_bottom = 151.0
+text = "¡¡¡¡¡Nivel 1 Completado!!11!!!11"
+label_settings = SubResource("LabelSettings_2hvvo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Score" type="Label" parent="."]
+offset_top = 168.0
+offset_right = 1152.0
+offset_bottom = 319.0
+label_settings = SubResource("LabelSettings_2hvvo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WorldRecord" type="Label" parent="."]
+offset_top = 328.0
+offset_right = 1152.0
+offset_bottom = 479.0
+text = "World Record: (Edu): 00:09:04"
+label_settings = SubResource("LabelSettings_2hvvo")
+horizontal_alignment = 1
+vertical_alignment = 1

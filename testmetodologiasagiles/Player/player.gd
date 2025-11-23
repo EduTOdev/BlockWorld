@@ -124,8 +124,9 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	
-	for i in range(get_slide_collision_count()):
-		checkCollisions(i)
+	if is_on_floor() or is_on_wall() or is_on_ceiling():
+		for i in range(get_slide_collision_count()):
+			checkCollisions(i)
 	
 	squashStretch()
 

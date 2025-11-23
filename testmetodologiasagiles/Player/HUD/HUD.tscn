@@ -1,7 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://cpuwtwuca6ll2"]
+[gd_scene load_steps=12 format=3 uid="uid://cpuwtwuca6ll2"]
 
 [ext_resource type="Script" uid="uid://ov0lwq12rrm3" path="res://Player/HUD/Hud.gd" id="1_6lrxr"]
 [ext_resource type="Script" uid="uid://co32qydx6ud3b" path="res://Player/HUD/LevelTimer.gd" id="2_6lrxr"]
+[ext_resource type="Texture2D" uid="uid://bxm60h6hnpqny" path="res://weapons/Laser/alchemyCircle2.png" id="3_bqhao"]
+[ext_resource type="Script" uid="uid://bchlgm3twmxwt" path="res://weapons/alchemy_circle_extra.gd" id="4_haav5"]
+[ext_resource type="Texture2D" uid="uid://c8xh1ncpimx55" path="res://weapons/Laser/alchemyCircle1.png" id="5_riwve"]
+[ext_resource type="Script" uid="uid://81hpv2fosrit" path="res://weapons/alchemy_circle_main.gd" id="6_xap6c"]
+[ext_resource type="Texture2D" uid="uid://cid2ugyr01hky" path="res://Sprites/Key1.png" id="7_2mnv5"]
+[ext_resource type="Texture2D" uid="uid://q35a2ya5b6tw" path="res://weapons/Shield/alchemyCircle2.png" id="7_riwve"]
+[ext_resource type="Texture2D" uid="uid://c1v3pcjolero4" path="res://weapons/Shield/alchemyCircle1.png" id="8_xap6c"]
+[ext_resource type="Texture2D" uid="uid://csjqamoyulnm7" path="res://Sprites/Key2.png" id="10_oc7wu"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_m6s6l"]
 font_size = 32
@@ -27,3 +35,39 @@ offset_bottom = 45.0
 label_settings = SubResource("LabelSettings_m6s6l")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Laser" type="Node2D" parent="."]
+position = Vector2(936, 568)
+
+[node name="AlchemyCircleExtra" type="Sprite2D" parent="Laser"]
+scale = Vector2(2, 2)
+texture = ExtResource("3_bqhao")
+script = ExtResource("4_haav5")
+
+[node name="AlchemyCircleMain" type="Sprite2D" parent="Laser"]
+scale = Vector2(2, 2)
+texture = ExtResource("5_riwve")
+script = ExtResource("6_xap6c")
+
+[node name="Key" type="Sprite2D" parent="Laser"]
+position = Vector2(-40, 40)
+scale = Vector2(5, 5)
+texture = ExtResource("7_2mnv5")
+
+[node name="Shield" type="Node2D" parent="."]
+position = Vector2(1072, 568)
+
+[node name="AlchemyCircleExtra" type="Sprite2D" parent="Shield"]
+scale = Vector2(2, 2)
+texture = ExtResource("7_riwve")
+script = ExtResource("4_haav5")
+
+[node name="AlchemyCircleMain" type="Sprite2D" parent="Shield"]
+scale = Vector2(2, 2)
+texture = ExtResource("8_xap6c")
+script = ExtResource("6_xap6c")
+
+[node name="Key" type="Sprite2D" parent="Shield"]
+position = Vector2(-40.0001, 40)
+scale = Vector2(5, 5)
+texture = ExtResource("10_oc7wu")

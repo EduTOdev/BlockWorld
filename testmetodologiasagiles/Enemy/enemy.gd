@@ -38,11 +38,11 @@ func _on_area_2d_body_exited(body) -> void:
 		player_in_range = false
 
 func start_jump_charge():
-	target_position = Gamestate.player.global_position
 	is_charging = true
 	if !dead:
 		$AnimatedSprite2D.flip_h = target_position.x < global_position.x
 	await get_tree().create_timer(2.0).timeout
+	target_position = Gamestate.player.global_position
 	perform_jump()
 
 
